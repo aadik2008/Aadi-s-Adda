@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fault Tolerance and Circuit Breakers in Spring Boot Microservices</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Aadi's Adda</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <main>
+        <div class="container">
+            <article class="blog-post">
+                <h2>Fault Tolerance and Circuit Breakers in Spring Boot Microservices</h2>
+                <p class="date">May 25, 2024</p>
+                <p>In a microservices architecture, fault tolerance is the ability of a system to remain operational and responsive even when certain components or services fail. It's an essential aspect of building resilient and reliable systems.</p>
+                <h3>Why Fault Tolerance Matters</h3>
+                <p>Microservices are distributed systems where multiple services interact with each other. As a result, failures such as network issues, service unavailability, or high response times can occur. Fault tolerance mechanisms help mitigate the impact of these failures and prevent them from propagating throughout the system.</p>
+                <h3>Circuit Breaker Pattern</h3>
+                <p>The circuit breaker pattern is a design pattern used to handle faults gracefully in distributed systems. It acts as a proxy between a client and a service, monitoring the service's health. When the service experiences failures or becomes unresponsive, the circuit breaker can trip, preventing further requests from reaching the faulty service.</p>
+                <p>Spring Boot provides support for implementing circuit breakers through libraries like Netflix Hystrix and Resilience4j.</p>
+                <h3>Netflix Hystrix Example</h3>
+                <p>Here's an example of using Netflix Hystrix in a Spring Boot microservice:</p>
+                <pre>
+                    <code>
+                        @RestController
+                        public class MyController {
+                        
+                            @Autowired
+                            private MyService myService;
+                        
+                            @GetMapping("/getData")
+                            @HystrixCommand(fallbackMethod = "fallbackData")
+                            public String getData() {
+                                return myService.getData();
+                            }
+                        
+                            public String fallbackData() {
+                                return "Fallback data";
+                            }
+                        }
+                    </code>
+                </pre>
+                <p>In this example, the `@HystrixCommand` annotation is used to specify a fallback method (`fallbackData`) that will be called if the `getData` method in `MyService` fails or takes too long to respond.</p>
+                <h3>Resilience4j Example</h3>
+                <p>Resilience4j is another popular library for implementing resilience patterns. Here's how you can use Resilience4j in Spring Boot:</p>
+                <pre>
+                    <code>
+                        @RestController
+                        public class MyController {
+                        
+                            @Autowired
+                            private MyService myService;
+                        
+                            private CircuitBreaker circuitBreaker = CircuitBreaker.ofDefaults("myService");
+                        
+                            @GetMapping("/getData")
+                            public String getData() {
+                                return circuitBreaker.executeSupplier(() -> myService.getData());
+                            }
+                        }
+                    </code>
+                </pre>
+                <p>In this example, a `CircuitBreaker` instance is created using Resilience4j's `CircuitBreaker.ofDefaults()` method. The `executeSupplier` method is used to execute the `getData` method from `MyService` within the circuit breaker's context.</p>
+                <h3>Conclusion</h3>
+                <p>Fault tolerance and circuit breakers are essential components of building robust microservices architectures. By incorporating these patterns and libraries like Netflix Hystrix or Resilience4j, developers can create resilient systems that can handle failures gracefully and maintain high availability.</p>
+            </article>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 My Awesome Blog. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
